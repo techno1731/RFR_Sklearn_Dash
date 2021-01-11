@@ -5,7 +5,7 @@
 [![Python](https://img.shields.io/pypi/pyversions/tensorflow?logo=python&logoColor=white)](https://github.com/python/cpython)
 [![Numpy](https://img.shields.io/badge/Numpy-1.19.5-skyblue?logo=numpy)](https://github.com/numpy/numpy)
 [![Dash](https://img.shields.io/badge/Dash-1.18.1-darkblue)](https://github.com/plotly/dash)
-[![Sklearn](https://img.shields.io/badge/scikit-learn-0.24.0-orange)](https://github.com/scikit-learn/scikit-learn)
+[![Sklearn](https://img.shields.io/badge/scikit%20learn-0.24.0-orange)](https://github.com/scikit-learn/scikit-learn)
 [![Black](https://img.shields.io/badge/Code%20Style-Black-black)](https://github.com/psf/black)
 
 ## What is it?
