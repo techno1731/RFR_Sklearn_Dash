@@ -7,6 +7,7 @@ from sklearn.impute import SimpleImputer
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 
+from settings import config
 # Defining functions for use in training, testing and deployment.
 
 # preprocess the Origin column in data
@@ -101,7 +102,7 @@ def load_model():
         model = load_model()
     """
     ##loading the model from the saved file
-    with open("model.bin", "rb") as f_in:
+    with open(config.root+"/main/model.bin", "rb") as f_in:
         model = pickle.load(f_in)
     return model
 
