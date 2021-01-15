@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import pandas as pd
 import numpy as np
@@ -11,13 +10,14 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dash_daq as daq
 import dash_bootstrap_components as dbc
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 
 from settings import config, about
 
-###########################################
+# ----------------------------------------------------------------------------
 # Data Preparation for the App
-##########################################
+# ----------------------------------------------------------------------------
+
 
 # Load the model
 
@@ -85,70 +85,175 @@ slider_3_min = math.floor(data[slider_3_label].min())
 slider_3_mean = round(data[slider_3_label].mean())
 slider_3_max = round(data[slider_3_label].max())
 
-#####################################
-# Layout HTML part
-#####################################
+# ----------------------------------------------------------------------------
+# Dash App Styling Begin
+# ----------------------------------------------------------------------------
 
-app = dash.Dash(__name__)#,external_stylesheets=dbc.themes.SLATE)
+# App Instance
+app = dash.Dash(name=config.name, 
+                assets_folder=config.root+"/app/static", 
+                external_stylesheets=[dbc.themes.SLATE, 
+                                      config.fontawesome])
+app.title = config.name
 
-# The page structure will be:
-#    Features Importance Chart
-#    <H4> Feature #1 name
-#    Slider to update Feature #1 value
-#    <H4> Feature #2 name
-#    Slider to update Feature #2 value
-#    <H4> Feature #3 name
-#    Slider to update Feature #3 value
-#    <H2> Updated Prediction
-#    Callback fuction with Sliders values as inputs and Prediction as Output
+# Navbar
+navbar = dbc.Nav(className="nav nav-pills", children=[
+    ## logo/home
+    dbc.NavItem(html.Img(src=app.get_asset_url("logo.png"), height="40px")),
+    ## about
+    dbc.NavItem(html.Div([
+        dbc.NavLink("How-to", href="/", id="about-popover", active=False),
+        dbc.Popover(id="about", is_open=False, target="about-popover", children=[
+            dbc.PopoverHeader("How it works"), dbc.PopoverBody(about.txt)
+        ])
+    ])),
+    ## links
+    dbc.DropdownMenu(label="Links", nav=True, children=[
+        dbc.DropdownMenuItem([html.I(className="fa fa-linkedin"), "  linkedin"], href=config.contacts, target="_blank"), 
+        dbc.DropdownMenuItem([html.I(className="fa fa-github"), "  Code"], href=config.code, target="_blank"),
+        dbc.DropdownMenuItem([html.I(className="fa fa-folder-open"), "  Portfolio"], href=config.portfolio, target="_blank")
+    ])
+])
 
-# We apply basic HTML formatting to the layout
-app.layout = html.Div(
-    style={"textAlign": "center", "width": "800px", "font-family": "Verdana"},
-    children=[
-        # Title display
-        html.H1(children="RandonForestRegressor App made with Sklearn and Dash"),
-        # Dash Graph Component calls the fig_features_importance parameters
-        dcc.Graph(figure=fig_features_importance),
-        # We display the most important feature's name
-        html.H4(children=slider_1_label),
-        # The Dash Slider is built according to Feature #1 ranges
-        dcc.Slider(
-            id="X1_slider",
-            min=slider_1_min,
-            max=slider_1_max,
-            step=100,
-            value=slider_1_mean,
-            marks={
-                i: "{} bars".format(i)
-                for i in range(slider_1_min, slider_1_max + 1, 500)
-            },
+# ----------------------------------------------------------------------------
+# Styling variables and definitions  
+# ----------------------------------------------------------------------------
+
+align_center = {'textAlign' : 'center'}
+
+prediction_card = [
+    dbc.CardHeader(html.H3("Prediction Result",style=align_center)),
+    dbc.CardBody(
+        [
+            html.H3(id="prediction_result", className="card-text", style=align_center),
+        ]
+    ),
+]
+graph_card = [
+    dbc.CardHeader(html.H3("Features Rank", style= align_center)),
+    dbc.CardBody(
+        [
+            html.Div(children=[
+           
+            # We display the most important feature's name
+            dcc.Graph(figure=fig_features_importance)])
+        ]
+    ),
+]
+sliders_card = [
+    dbc.CardHeader(html.H3("Top Features Control", style= align_center)),
+    dbc.CardBody(
+        [
+            html.Div(children=[
+                    # The Dash Slider is built according to Feature #1 ranges
+                    html.H4(slider_1_label, style= align_center),
+                    dcc.Slider(
+                        id="X1_slider",
+                        min=slider_1_min,
+                        max=slider_1_max,
+                        step=100,
+                        value=slider_1_mean,
+                        marks={
+                            i: "{} bars".format(i) for i in range(slider_1_min, slider_1_max + 1, 500)
+                        },
+                    ),
+                    # The same logic is applied to the following names / sliders
+                    html.H4(slider_2_label, style= align_center),
+                    dcc.Slider(
+                        id="X2_slider",
+                        min=slider_2_min,
+                        max=slider_2_max,
+                        step=1,
+                        value=slider_2_mean,
+                        marks={
+                            i: "{}°".format(i) for i in range(slider_2_min, slider_2_max + 1)
+                        },
+                    ),
+                    html.H4(slider_3_label, style= align_center),
+                    dcc.Slider(
+                        id="X3_slider",
+                        min=slider_3_min,
+                        max=slider_3_max,
+                        step=10,
+                        value=slider_3_mean,
+                        marks={
+                            i: "{}".format(i) for i in range(slider_3_min, slider_3_max + 1, 10)
+                        },
+                    ),
+                ]),
+        ]
+    ),
+]
+# ----------------------------------------------------------------------------
+# Layout
+# ----------------------------------------------------------------------------
+
+app.layout = dbc.Container(fluid=True, children=[
+    ## Top
+    html.H1(config.name, id="nav-pills", style= align_center),
+    navbar,
+    html.Br(),
+
+    ## Body
+    dbc.Row([
+        # Grap Column
+        dbc.Col(
+            dbc.Card(graph_card, color="primary", inverse=True)
         ),
-        # The same logic is applied to the following names / sliders
-        html.H4(children=slider_2_label),
-        dcc.Slider(
-            id="X2_slider",
-            min=slider_2_min,
-            max=slider_2_max,
-            step=1,
-            value=slider_2_mean,
-            marks={i: "{}°".format(i) for i in range(slider_2_min, slider_2_max + 1)},
-        ),
-        html.H4(children=slider_3_label),
-        dcc.Slider(
-            id="X3_slider",
-            min=slider_3_min,
-            max=slider_3_max,
-            step=10,
-            value=slider_3_mean,
-            marks={
-                i: "{}".format(i) for i in range(slider_3_min, slider_3_max + 1, 10)
-            },
-        ),
-        # The predictin result will be displayed and updated here
-        html.H2(id="prediction_result"),
-    ],
-)
+        dbc.Col(children=[
+            dbc.Row([
+                dbc.Col(
+                    dbc.Card(sliders_card, color="primary", inverse=True)
+                )
+            ]),
+            dbc.Row([
+                dbc.Col(
+                    dbc.Card(prediction_card, color="primary", inverse=True)
+                )
+            ])
+        ])
+    ])
+])
+"""
+        # Sliders + Results Column
+        dbc.Col([
+            # Slider Row
+            dbc.Row([
+                # Slider Column
+                dbc.Col(
+                    "Slider",
+                #    dbc.Card(prediction_card, color="primary", inverse=True)
+                ),
+            ]),
+            dbc.Row(
+                # Prediction Column
+                dbc.Col(
+                    "Prediction",
+                   # dbc.Card(prediction_card,color="primary", inverse=True)
+                )
+            )
+        ])
+
+    ])
+])
+"""
+# ----------------------------------------------------------------------------
+# Dash @Callbacks 
+# ----------------------------------------------------------------------------
+
+# Python functions for about navitem-popover
+@app.callback(output=Output("about","is_open"), inputs=[Input("about-popover","n_clicks")], state=[State("about","is_open")])
+def about_popover(n, is_open):
+    if n:
+        return not is_open
+    return is_open
+
+@app.callback(output=Output("about-popover","active"), inputs=[Input("about-popover","n_clicks")], state=[State("about-popover","active")])
+def about_active(n, active):
+    if n:
+        return not active
+    return active
+
 
 # The callback function will provide one "Ouput" in the form of a string (=children)
 @app.callback(
@@ -183,7 +288,7 @@ def update_prediction(X1, X2, X3):
     prediction = mod.predict_mpg(input_X, model)
 
     # And retuned to the Output of the callback function
-    return "Predicted Miles Per Galon: {}".format(list(prediction)[0])
+    return "MPG: {}".format(round(list(prediction)[0],ndigits=3))
 
 
 if __name__ == "__main__":
