@@ -3,7 +3,7 @@
 import pandas as pd
 import numpy as np
 import math
-from model import *
+import main.model as mod
 
 import plotly.graph_objects as go
 import dash
@@ -13,13 +13,15 @@ import dash_daq as daq
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
 
+from settings import config, about
+
 ###########################################
 # Data Preparation for the App
 ##########################################
 
 # Load the model
 
-model = load_model()
+model = mod.load_model()
 
 # defining the column names
 cols = [
@@ -33,8 +35,7 @@ cols = [
     "Origin",
 ]
 # reading the .data file using pandas, sep = " "
-df = pd.read_csv(
-    "data/auto-mpg.data",
+df = pd.read_csv(config.root+"/data/auto-mpg.data",
     names=cols,
     na_values="?",
     comment="\t",
@@ -44,9 +45,9 @@ df = pd.read_csv(
 
 data = df.drop("MPG", axis=1)
 
-data_prep = full_preprocess(data)
+data_prep = mod.full_preprocess(data)
 
-df_feature_importances = pd.read_csv("features_ranked.csv")
+df_feature_importances = pd.read_csv(config.root+"/data/features_ranked.csv")
 df_feature_importances = df_feature_importances.sort_values(
     "importance", ascending=False
 )
@@ -88,7 +89,7 @@ slider_3_max = round(data[slider_3_label].max())
 # Layout HTML part
 #####################################
 
-app = dash.Dash(__name__,external_stylesheets=dbc.themes.SLATE)
+app = dash.Dash(__name__)#,external_stylesheets=dbc.themes.SLATE)
 
 # The page structure will be:
 #    Features Importance Chart
@@ -179,7 +180,7 @@ def update_prediction(X1, X2, X3):
     }
 
     # Prediction is calculated based on the preprocessed input_X array
-    prediction = predict_mpg(input_X, model)
+    prediction = mod.predict_mpg(input_X, model)
 
     # And retuned to the Output of the callback function
     return "Predicted Miles Per Galon: {}".format(list(prediction)[0])
