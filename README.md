@@ -10,9 +10,9 @@
 
 ## What is it?
 
-This repo contains all the files required to launch a Dash App that predicts the Miles per Galon based on 3 main features, the model was trained with a RandonForestRegressor ensemble from scikit-learn on the UCI data-mpg.data dataset.
+This repo contains all the files required to launch a Docker container with a Dash App that predicts the Miles per Galon based on 3 main features, the model was trained with a RandonForestRegressor ensemble from scikit-learn on the UCI data-mpg.data dataset.
 
-Demo site: pending deployment on aws.
+Demo site running on AWS ECS: http://54.172.50.30:8080/
 
 Model training notebook is included. You can either ise the included pickle file or train your own with the notebook. 
 
@@ -54,12 +54,10 @@ That's it you have an environment ready to develop with the codebase.
 
 ## Usage
 
-A demo of the application will made available online soon.
-
 To run the application locally after following installation instructions do:
 
 ```bash
-python app.py
+python run.py
 ```
 Play with the sliders to observe how the the predicted MPG changes.
 
