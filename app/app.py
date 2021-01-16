@@ -90,16 +90,16 @@ slider_3_max = round(data[slider_3_label].max())
 # ----------------------------------------------------------------------------
 
 # App Instance
-app = dash.Dash(name=config.name, 
+application = dash.Dash(name=config.name, 
                 assets_folder=config.root+"/app/static", 
                 external_stylesheets=[dbc.themes.SLATE, 
                                       config.fontawesome])
-app.title = config.name
+application.title = config.name
 
 # Navbar
 navbar = dbc.Nav(className="nav nav-pills", children=[
     ## logo/home
-    dbc.NavItem(html.Img(src=app.get_asset_url("logo.png"), height="40px")),
+    dbc.NavItem(html.Img(src=application.get_asset_url("logo.png"), height="40px")),
     ## about
     dbc.NavItem(html.Div([
         dbc.NavLink("How-to", href="/", id="about-popover", active=False),
@@ -188,7 +188,7 @@ sliders_card = [
 # Layout
 # ----------------------------------------------------------------------------
 
-app.layout = dbc.Container(fluid=True, children=[
+application.layout = dbc.Container(fluid=True, children=[
     ## Top
     html.H1(config.name, id="nav-pills", style= align_center),
     navbar,
@@ -242,13 +242,13 @@ app.layout = dbc.Container(fluid=True, children=[
 # ----------------------------------------------------------------------------
 
 # Python functions for about navitem-popover
-@app.callback(output=Output("about","is_open"), inputs=[Input("about-popover","n_clicks")], state=[State("about","is_open")])
+@application.callback(output=Output("about","is_open"), inputs=[Input("about-popover","n_clicks")], state=[State("about","is_open")])
 def about_popover(n, is_open):
     if n:
         return not is_open
     return is_open
 
-@app.callback(output=Output("about-popover","active"), inputs=[Input("about-popover","n_clicks")], state=[State("about-popover","active")])
+@application.callback(output=Output("about-popover","active"), inputs=[Input("about-popover","n_clicks")], state=[State("about-popover","active")])
 def about_active(n, active):
     if n:
         return not active
@@ -256,7 +256,7 @@ def about_active(n, active):
 
 
 # The callback function will provide one "Ouput" in the form of a string (=children)
-@app.callback(
+@application.callback(
     Output(component_id="prediction_result", component_property="children"),
     # The values correspnding to the three sliders are obtained by calling their id and value property
     [
@@ -292,4 +292,4 @@ def update_prediction(X1, X2, X3):
 
 
 if __name__ == "__main__":
-    app.run_server()
+    application.run_server()
