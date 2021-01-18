@@ -4,8 +4,10 @@
 
 [![Python](https://img.shields.io/pypi/pyversions/tensorflow?logo=python&logoColor=white)](https://github.com/python/cpython)
 [![Numpy](https://img.shields.io/badge/Numpy-1.19.5-skyblue?logo=numpy)](https://github.com/numpy/numpy)
-[![Dash](https://img.shields.io/badge/Dash-1.18.1-darkblue)](https://github.com/plotly/dash)
+[![Dash](https://img.shields.io/badge/Dash-1.18.1-blue)](https://github.com/plotly/dash)
 [![Sklearn](https://img.shields.io/badge/scikit%20learn-0.24.0-orange)](https://github.com/scikit-learn/scikit-learn)
+[![Docker](https://img.shields.io/badge/Docker-20.10.2-darkblue?logo=docker)](https://github.com/docker)
+[![aws](https://img.shields.io/badge/AWS-ECS-orange?logo=aws)](https://aws.amazon.com/)
 [![Black](https://img.shields.io/badge/Code%20Style-Black-black)](https://github.com/psf/black)
 
 ## What is it?
@@ -14,7 +16,7 @@ This repo contains all the files required to launch a Docker container with a Da
 
 Demo site running on AWS ECS: http://54.172.50.30:8080/
 
-Model training notebook is included. You can either ise the included pickle file or train your own with the notebook. 
+Model training notebook is included. You can either use the included pickle file or train your own with the notebook. 
 
 ## Installation
 
